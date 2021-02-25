@@ -164,54 +164,54 @@ public class OrderActivity extends AppCompatActivity {
         thread.setDaemon(true);  // 메인스레드와 종료 동기화
         thread.start();
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",  Locale.getDefault());
-        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
-
-        time = format2.format(calendar.getTime());
-        String time2 = format2.format(calendar.getTime());
-
-        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
-                    if (printOrderModel.getPrintStatus().equals("x")) {
-                        print(printOrderModel);
-                        printOrderModel.setPrintStatus("o");
-                        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel);
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
-                    if (printOrderModel.getPrintStatus().equals("x")) {
-                        print(printOrderModel);
-                        printOrderModel.setPrintStatus("o");
-                        FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel);
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",  Locale.getDefault());
+//        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
+//
+//        time = format2.format(calendar.getTime());
+//        String time2 = format2.format(calendar.getTime());
+//
+//        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot item : snapshot.getChildren()) {
+//                    PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
+//                    if (printOrderModel.getPrintStatus().equals("x")) {
+//                        print(printOrderModel);
+//                        printOrderModel.setPrintStatus("o");
+//                        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel);
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//        FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot item : snapshot.getChildren()) {
+//                    PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
+//                    if (printOrderModel.getPrintStatus().equals("x")) {
+//                        print(printOrderModel);
+//                        printOrderModel.setPrintStatus("o");
+//                        FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel);
+//
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
 //    @Override

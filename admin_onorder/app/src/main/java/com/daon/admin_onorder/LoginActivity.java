@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             try {
-                printer.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.0.192", 9100);
+                printer.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "192.168.20.33", 9100);
                 printer.resetPrinter();
 //                printer2.openPrinter(Sam4sPrint.DEVTYPE_ETHERNET, "172.30.1.59", 9100);
 //                printer2.resetPrinter();
@@ -136,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     editor.putString("storename", "오태식해바라기치킨앤존맛탱");
+                    editor.putString("storecode", "ots");
                     editor.commit();
                     setFcm(fcm_id);
                 } catch (Exception e) {
