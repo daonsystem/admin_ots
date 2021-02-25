@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.daon.admin_onorder.model.PrintOrderModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,15 +45,23 @@ public class MainActivity extends AppCompatActivity {
     ImageView bottom_order;
     ImageView bottom_payment;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    AdminApplication app = new AdminApplication();
+    AdminApplication app;
     String time;
+    String table ="";
+    String table_time = "";
+    Sam4sPrint sam4sPrint;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         pref = getSharedPreferences("pref", MODE_PRIVATE);
-
+        if (app == null){
+            app = new AdminApplication();
+        }
+        if (sam4sPrint == null){
+            sam4sPrint = app.getPrinter();
+        }
         BackThread thread = new BackThread();  // 작업스레드 생성
         thread.setDaemon(true);  // 메인스레드와 종료 동기화
         thread.start();
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, OrderActivity.class);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
         bottom_service = findViewById(R.id.bottom_menu2);
@@ -71,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
         bottom_payment = findViewById(R.id.bottom_menu4);
@@ -100,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
 
@@ -121,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, OrderActivity.class);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
         tableBtn = findViewById(R.id.menu5);
@@ -136,18 +146,22 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd",  Locale.getDefault());
 
         time = format2.format(calendar.getTime());
-        String time2 = format2.format(calendar.getTime());
+        String time2 = format.format(calendar.getTime());
 
-        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename", "")).child(time).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot item : snapshot.getChildren()) {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     if (printOrderModel.getPrintStatus().equals("x")) {
-                        print(printOrderModel);
-                        printOrderModel.setPrintStatus("o");
-                        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel);
+                        FirebaseDatabase.getInstance().getReference().child("order").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                print(printOrderModel);
+
+                            }
+                        });
 
                     }
                 }
@@ -159,17 +173,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Log.d("daon_test", "adfasdfasdf");
         FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot item : snapshot.getChildren()) {
                     PrintOrderModel printOrderModel = item.getValue(PrintOrderModel.class);
                     if (printOrderModel.getPrintStatus().equals("x")) {
-                        print(printOrderModel);
-                        printOrderModel.setPrintStatus("o");
-                        FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename","")).child(time).child(item.getKey()).setValue(printOrderModel);
-
+                        if (table_time.equals(printOrderModel.getTime()) && table.equals(printOrderModel.getTable())) {
+                        }else {
+                            print(printOrderModel);
+                            printOrderModel.setPrintStatus("o");
+                            FirebaseDatabase.getInstance().getReference().child("service").child(pref.getString("storename", "")).child(time).child(item.getKey()).setValue(printOrderModel);
+                        }
+                            table_time = printOrderModel.getTime();
+                            table = printOrderModel.getTable();
                     }
                 }
             }
@@ -182,12 +200,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void print(PrintOrderModel printOrderModel){
-
-
-        Sam4sPrint sam4sPrint = app.getPrinter();
-//        Sam4sPrint sam4sPrint2 = app.getPrinter2();
         try {
-            Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
         } catch (Exception e) {
             e.printStackTrace();
         }

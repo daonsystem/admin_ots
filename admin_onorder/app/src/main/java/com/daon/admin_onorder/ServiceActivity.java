@@ -53,7 +53,6 @@ public class ServiceActivity extends AppCompatActivity {
     ImageView bottom_order;
     ImageView bottom_payment;
     String time;
-    AdminApplication app = new AdminApplication();
     SharedPreferences pref;
 
     @Override
@@ -66,8 +65,8 @@ public class ServiceActivity extends AppCompatActivity {
         bottom_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ServiceActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(ServiceActivity.this, MainActivity.class);
+//                startActivity(intent);
                 finish();
             }
         });
@@ -224,8 +223,8 @@ public class ServiceActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ServiceActivity.this, MainActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(ServiceActivity.this, MainActivity.class);
+//        startActivity(intent);
         finish();
     }
 
@@ -243,45 +242,7 @@ public class ServiceActivity extends AppCompatActivity {
 //                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 //        }
 //    }
-public void print(PrintOrderModel printOrderModel){
 
-
-    Sam4sPrint sam4sPrint = app.getPrinter();
-//        Sam4sPrint sam4sPrint2 = app.getPrinter2();
-    try {
-        Log.d("daon_test","print ="+sam4sPrint.getPrinterStatus());
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    Sam4sBuilder builder = new Sam4sBuilder("ELLIX30", Sam4sBuilder.LANG_KO);
-    try {
-        builder.addTextAlign(Sam4sBuilder.ALIGN_CENTER);
-        builder.addFeedLine(2);
-        builder.addTextSize(3,3);
-        builder.addText(printOrderModel.getTable());
-        builder.addFeedLine(2);
-        builder.addTextSize(2,2);
-        builder.addTextAlign(builder.ALIGN_RIGHT);
-        builder.addText(printOrderModel.getOrder());
-        builder.addFeedLine(2);
-        builder.addTextSize(1,1);
-        builder.addText(printOrderModel.getTime());
-        builder.addFeedLine(1);
-        builder.addCut(Sam4sBuilder.CUT_FEED);
-        sam4sPrint.sendData(builder);
-//            if (printOrderModel.getTable().contains("주문")) {
-//                sam4sPrint.sendData(builder);
-////                sam4sPrint2.sendData(builder);
-//            }else{
-//                sam4sPrint.sendData(builder);
-//            }
-        MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
-        mp.start();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-
-}
     class BackThread extends Thread{  // Thread 를 상속받은 작업스레드 생성
         @Override
         public void run() {
